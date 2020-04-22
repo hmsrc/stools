@@ -29,4 +29,5 @@ LICENSE = "LICENSE"
 INSTALL_REQUIRES = (
     ('requests', {'min_version': None}),
     ('spython', {'min_version': "0.0.25"}),
+    ('psutil', {'min_version': "5.2.2"}),
 )
