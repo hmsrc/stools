@@ -37,35 +37,35 @@ import json
 def get_parser():
     parser = argparse.ArgumentParser(description="Singularity Clair Scanner")
 
-    parser.add_argument('--version', dest="version", 
-                        help="show version and exit.", 
+    parser.add_argument('--version', dest="version",
+                        help="show version and exit.",
                         default=False, action='store_true')
 
-    parser.add_argument('--start-server', dest="server", 
-                        help="If running natively, start the web server too.", 
+    parser.add_argument('--start-server', dest="server",
+                        help="If running natively, start the web server too.",
                         default=True, action='store_true')
 
     parser.add_argument("images", nargs='*',
-                         help='Singularity images to scan.', 
+                         help='Singularity images to scan.',
                          type=str)
-    
+
     parser.add_argument("--report", default=None, dest="report_location", type=dir_path,
                         help="save Clair reports to chosen directory")
 
     parser.add_argument("--port", default=8080,
-                      help='port to serve application (default 8080)', 
+                      help='port to serve application (default 8080)',
                       type=int)
 
     parser.add_argument("--host", default="0.0.0.0",
-                         help='host to serve application (default 0.0.0.0)', 
+                         help='host to serve application (default 0.0.0.0)',
                          type=str)
 
     parser.add_argument("--clair-port", default=6060,
-                      help='port Clair is running on (default 6060)', 
+                      help='port Clair is running on (default 6060)',
                       type=int, dest="clair_port")
 
     parser.add_argument("--clair-host", default="0.0.0.0",
-                         help='host Clair running from (default clair-scanner)', 
+                         help='host Clair running from (default clair-scanner)',
                          type=str, dest="clair_host")
 
     return parser
@@ -86,13 +86,13 @@ def main():
     parser = get_parser()
 
     def help(retval=0):
-        '''print help, including the software version and active client 
+        '''print help, including the software version and active client
            and exit with return code.
         '''
         version()
         parser.print_help()
         sys.exit(retval)
-    
+
 
     # If the user didn't provide any arguments, show the full help
     if len(sys.argv) == 1:
@@ -112,7 +112,7 @@ def main():
         sys.exit(1)
 
     print(clair)
-    
+
     # Local Server
     webroot = '/var/www/images'
 
@@ -154,7 +154,7 @@ def main():
         print('3. Generating report!')
         report = clair.report(os.path.basename(image))
         if args.report_location is not None:
-            fpath = os.path.join(args.report_location, os.path.splitext(os.path.basename(image))[0] + ".json")
+            fpath = os.path.join(args.report_location, "clair-report.json")
             with open(fpath, "w+") as file:
                 file.write(json.dumps(report, indent=2))
             print("Wrote report to %s" % fpath)
@@ -164,6 +164,6 @@ def main():
     # Shut down temporary server
     process.terminate()
     shutil.rmtree(webroot)
-    
+
 if __name__ == '__main__':
     main()
